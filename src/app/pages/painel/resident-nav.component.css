@@ -1,0 +1,24 @@
+:host { display:block; min-width:0; }
+.sidebar { background: #fff; border-right: 1px solid var(--border); padding: 28px 18px; }
+.resident-card { display: flex; align-items: center; gap: 12px; padding: 0 4px 26px; border-bottom: 1px solid var(--border); }
+.resident-card strong { display: block; font-size: 15px; overflow-wrap: anywhere; }
+.resident-card span { display: block; color: var(--muted); font-size: 12px; margin-top: 3px; }
+.avatar { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; border-radius: 14px; background: #f4e0e6; color: var(--rose-dark); font-size: 16px; font-weight: 700; }
+.nav-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--rose-dark); }
+.nav-label { margin: 26px 12px 12px; color: var(--muted); }
+.sidebar nav { display: grid; gap: 6px; }
+.sidebar nav a { display: flex; align-items: center; gap: 12px; min-height: 46px; padding: 10px 12px; color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 10px; }
+.sidebar nav a > span { width: 20px; font-size: 20px; text-align: center; line-height: 1; }
+.sidebar nav a.selected { background: #f7e8ed; color: var(--rose-dark); }
+.sidebar nav a:hover { background: #faf2f4; }
+.sidebar nav small { margin-left: auto; background: #fff; border-radius: 6px; padding: 1px 7px; font-size: 12px; }
+.sidebar-footer { border-top: 1px solid var(--border); margin-top: 32px; padding: 22px 8px; color: var(--muted); font-size: 12px; }
+.online-dot { display: inline-block; width: 7px; height: 7px; background: #2b8059; border-radius: 50%; margin-right: 5px; }
+.sidebar-footer a { display: flex; align-items: center; min-height: 44px; color: var(--rose-dark); text-decoration: none; font-weight: 600; }
+@media (max-width: 850px) {
+  .sidebar { padding: 12px var(--page-gutter); border-right: 0; border-bottom: 1px solid var(--border); }
+  .resident-card, .nav-label, .sidebar-footer { display: none; }
+  .sidebar nav { display: flex; overflow-x: auto; padding: 4px; scrollbar-width: thin; gap: 6px; }
+  .sidebar nav a { flex-shrink: 0; white-space: nowrap; }
+}
+.sidebar { min-height:100%; }

@@ -8,6 +8,7 @@ export interface Anuncio {
   imagem: string;
   descricao: string;
   destaque?: boolean;
+  ativo?: boolean;
 }
 
 export interface Parceiro {

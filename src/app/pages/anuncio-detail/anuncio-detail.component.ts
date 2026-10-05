@@ -1,11 +1,10 @@
 import { Component, computed, input } from '@angular/core';
-import { HeaderComponent } from '../../shared/header.component';
 import { MockDataService } from '../../core/mock-data.service';
 
 @Component({
- selector:'app-anuncio-detail', standalone:true, imports:[HeaderComponent],
+ selector:'app-anuncio-detail', standalone:true, imports:[],
  template:`
- <app-header />
+ 
  @if (anuncio(); as a) {
  <main class="detail container">
    <div class="breadcrumbs">Início › {{a.categoria}} › {{a.titulo}}</div>
@@ -20,4 +19,4 @@ import { MockDataService } from '../../core/mock-data.service';
  `,
  styleUrl: './anuncio-detail.component.css'
 })
-export class AnuncioDetailComponent { id=input<string>('1'); anuncio=computed(()=>this.data.anuncios().find(a=>a.id===Number(this.id()))); constructor(private data:MockDataService){} }
+export class AnuncioDetailComponent { id=input<string>('1'); anuncio=computed(()=>this.data.anuncios().find(a=>a.id===Number(this.id()) && a.ativo !== false)); constructor(private data:MockDataService){} }

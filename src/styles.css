@@ -1,22 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap');
-
 :root {
   --rose: #ad465c;
   --rose-dark: #84394a;
   --rose-soft: #f7dadd;
   --cream: #fff9f7;
   --text: #32272a;
-  --muted: #6e6063;
+  --muted: #625459;
   --border: #eadedb;
-  --serif: 'Playfair Display', Georgia, serif;
-  --sans: 'DM Sans', Arial, sans-serif;
+  --sans: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  --serif: var(--sans);
   --page-gutter: clamp(16px, 4vw, 64px);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 130px; -webkit-text-size-adjust: 100%; }
+html { scroll-behavior: auto; scroll-padding-top: 130px; -webkit-text-size-adjust: 100%; }
 body { margin: 0; font: 400 16px/1.6 var(--sans); color: var(--text); background: var(--cream); }
 app-root { display: block; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 button, input, select, textarea { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { cursor: pointer; line-height: 1.35; }
@@ -29,6 +28,12 @@ p { text-wrap: pretty; }
 :where(main, section, article, aside, nav, div) { min-width: 0; }
 :where(button, a, input, select, textarea):focus-visible { outline: 3px solid var(--rose-dark); outline-offset: 4px; }
 ::selection { background: var(--rose-soft); color: var(--rose-dark); }
+@media (max-width: 800px) {
+  :root { --page-gutter: max(16px, env(safe-area-inset-left), env(safe-area-inset-right)); }
+  app-root:has(app-header) { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  html { scroll-padding-top: 88px; scroll-padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
+  input, button, a { touch-action: manipulation; }
+}
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }

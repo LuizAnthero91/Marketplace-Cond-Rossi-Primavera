@@ -238,3 +238,16 @@
     width: 100%;
   }
 }
+@media (max-width: 600px) {
+  .partner-hero { padding-block: 28px; }
+  .partner-hero h1 { font-size: clamp(28px, 7.5vw, 36px); }
+  .partner-hero p { font-size: 15px; }
+  .container { padding-block: 24px; }
+  .section-head { gap: 12px; }
+  .section-head button { width: 100%; }
+  .partner-grid { gap: 16px; }
+  .partner-card img { aspect-ratio: 16 / 9; max-height: 220px; }
+  .partner-card > div { padding: 16px; }
+  .plans { gap: 20px; padding: 18px; border-radius: 18px; }
+  .plans h2 { font-size: 27px; }
+}

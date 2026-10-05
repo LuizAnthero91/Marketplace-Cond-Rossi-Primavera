@@ -177,3 +177,12 @@ aside a {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+@media (max-width: 600px) {
+  .cover { min-height: 210px; }
+  .title { padding-block: 28px; }
+  .title h1 { font-size: 34px; }
+  .info { padding-bottom: 24px; gap: 20px; }
+  .info h2 { margin-block: 16px 12px; }
+  .offer { padding: 14px; }
+  aside { padding: 18px; }
+}

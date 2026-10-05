@@ -1,0 +1,16 @@
+<aside class="sidebar">
+  <div class="resident-card">
+    <div class="avatar">{{resident.iniciais()}}</div>
+    <div><strong>{{resident.perfil().nome}}</strong><span>Morador · Rossi Primavera</span></div>
+  </div>
+  <p class="nav-label">MINHA COMUNIDADE</p>
+  <nav aria-label="Seções do painel">
+    @for (item of sections; track item.id) {
+      <a routerLink="/painel" [queryParams]="{secao: item.id}" [class.selected]="section() === item.id" [attr.aria-current]="section() === item.id ? 'page' : null">
+        <span aria-hidden="true">{{item.icon}}</span>{{item.title}}
+        @if (item.id === 'anuncios') { <small>{{resident.meusAnuncios().length}}</small> }
+      </a>
+    }
+  </nav>
+  <div class="sidebar-footer"><span class="online-dot"></span> Seu espaço na comunidade<a routerLink="/home">Explorar anúncios →</a></div>
+</aside>

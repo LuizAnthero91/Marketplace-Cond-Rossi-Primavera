@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { IsActiveMatchOptions, RouterLink, RouterLinkActive } from '@angular/router';
+import { ResidentService } from '../core/resident.service';
 
 @Component({
   selector: 'app-header',
@@ -12,14 +13,17 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
         <span><strong>ConectaCondo</strong><small>CONDOMÍNIO ROSSI PRIMAVERA</small></span>
       </a>
       <nav class="desktop-nav" aria-label="Navegação principal">
-        <a routerLink="/home" routerLinkActive="active" ariaCurrentWhenActive="page">Início</a>
-        <a routerLink="/home" fragment="categorias">Categorias</a>
+        <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="exactFragment" ariaCurrentWhenActive="page">Início</a>
+        <a routerLink="/home" fragment="categorias" routerLinkActive="active" [routerLinkActiveOptions]="exactFragment" ariaCurrentWhenActive="location">Categorias</a>
         <a routerLink="/parceiros" routerLinkActive="active" ariaCurrentWhenActive="page">Parceiros</a>
         <a routerLink="/painel" routerLinkActive="active" ariaCurrentWhenActive="page">Meu painel</a>
       </nav>
-      <div class="user-area"><span class="bell">♡</span><div class="avatar">LC</div><span class="user-name">Olá, Luiz</span></div>
+      <a class="user-area" routerLink="/painel" [queryParams]="{secao: 'perfil'}" aria-label="Abrir meu perfil"><div class="avatar">{{resident.iniciais()}}</div><span class="user-name">Olá, {{resident.perfil().nome.split(' ')[0]}}</span></a>
     </header>
   `,
   styleUrl: './header.component.css'
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+  readonly resident = inject(ResidentService);
+  readonly exactFragment: IsActiveMatchOptions = { paths: 'exact', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'exact' };
+}

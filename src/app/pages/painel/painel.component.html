@@ -1,0 +1,86 @@
+<main class="dashboard">
+  <app-resident-nav [section]="section()" />
+
+  <section class="workspace" aria-labelledby="panel-title">
+    <header class="page-heading">
+      <div><p class="eyebrow">PAINEL DO MORADOR</p><h1 id="panel-title">{{section() === 'resumo' ? 'Meu Painel' : title()}}</h1><p>Seus negócios e sua comunidade, em um só lugar.</p></div>
+      <button class="primary" (click)="openEditor()"><span aria-hidden="true">+</span> Novo anúncio</button>
+    </header>
+    <p class="demo-label">Ambiente demonstrativo · Suas alterações ficam salvas neste navegador.</p>
+    @if (resident.storageError()) { <p class="alert error" role="alert">Não foi possível salvar no navegador. As alterações desta sessão podem ser perdidas ao atualizar a página.</p> }
+    @if (notice()) { <div class="alert success" role="status">{{notice()}}<button aria-label="Fechar mensagem" (click)="notice.set('')">×</button></div> }
+
+    @if (section() === 'resumo') {
+      <section class="welcome">
+        <div><span class="eyebrow">ROSSI PRIMAVERA</span><h2>Olá, {{resident.perfil().nome.split(' ')[0]}}.</h2><p>Seu próximo cliente pode ser seu vizinho.<br>Deixe seus anúncios em dia e faça parte dessa conexão.</p><a routerLink="/painel" [queryParams]="{secao: 'anuncios'}">Gerenciar meus anúncios <span aria-hidden="true">↗</span></a></div>
+        <div class="welcome-art" aria-hidden="true"><svg viewBox="0 0 200 180" fill="none"><circle cx="100" cy="90" r="78" fill="currentColor" opacity=".08"/><path d="M38 86 100 34l62 52M54 75v76h92V75M84 151v-45h32v45M70 89h12M118 89h12" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M151 35v20m-10-10h20M34 116v14m-7-7h14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></div>
+      </section>
+      <section class="metrics" aria-label="Resumo dos meus anúncios">
+        <article><span class="metric-icon" aria-hidden="true">▤</span><span>Meus anúncios</span><strong>{{resident.meusAnuncios().length}}</strong><small>no seu catálogo</small></article>
+        <article><span class="metric-icon" aria-hidden="true">✓</span><span>Anúncios ativos</span><strong>{{resident.ativos().length}}</strong><small>visíveis na comunidade</small></article>
+        <article><span class="metric-icon" aria-hidden="true">Ⅱ</span><span>Anúncios pausados</span><strong>{{resident.meusAnuncios().length - resident.ativos().length}}</strong><small>você pode reativá-los</small></article>
+        <article><span class="metric-icon" aria-hidden="true">♡</span><span>Favoritos</span><strong>{{resident.anunciosFavoritos().length}}</strong><small>salvos para depois</small></article>
+      </section>
+      <div class="overview-grid">
+        <section class="surface">
+          <div class="section-heading"><h2>Meus anúncios</h2><a routerLink="/painel" [queryParams]="{secao: 'anuncios'}">Ver todos →</a></div>
+          @for (a of resident.meusAnuncios().slice(0, 3); track a.id) {
+            <div class="preview-row"><img [src]="a.imagem" [alt]="a.titulo" (error)="imageFailed($event)"><div><strong>{{a.titulo}}</strong><span>{{a.preco}}</span><small class="status" [class.paused]="a.ativo === false">{{a.ativo === false ? 'Pausado' : 'Ativo'}}</small></div><button class="subtle" (click)="openEditor(a)">Editar</button></div>
+          } @empty { <div class="empty"><h3>Seu primeiro anúncio começa aqui</h3><p>Divulgue um produto ou serviço para os seus vizinhos.</p><button class="primary" (click)="openEditor()">Criar anúncio</button></div> }
+        </section>
+        <section class="surface profile-summary"><span class="eyebrow">SEU PERFIL</span><h2>Mostre quem está por trás do seu negócio.</h2><p>Adicione sua apresentação e sua unidade para completar seu perfil.</p><div class="progress-label"><span>Perfil preenchido</span><strong>{{profileProgress()}}%</strong></div><progress [value]="profileProgress()" max="100" aria-label="Preenchimento do perfil"></progress><a class="secondary" routerLink="/painel" [queryParams]="{secao: 'perfil'}">Editar meu perfil</a></section>
+      </div>
+      @if (resident.dicas()) { <aside class="tip"><span aria-hidden="true">✦</span><div><strong>Um bom anúncio faz a diferença</strong><p>Use um título claro, descreva o que você oferece e mantenha o preço atualizado.</p></div></aside> }
+    }
+
+    @if (section() === 'anuncios') {
+      @if (editorOpen()) {
+        <section class="surface editor" aria-labelledby="editor-title">
+          <div class="section-heading"><div><p class="eyebrow">SEU NEGÓCIO</p><h2 id="editor-title">{{editingId === null ? 'Criar anúncio' : 'Editar anúncio'}}</h2></div><button type="button" class="subtle" (click)="cancelEditor()">Cancelar</button></div>
+          <form #adForm="ngForm" (ngSubmit)="saveAnuncio(adForm)">
+            <div class="form-grid">
+              <label class="full" for="ad-title">Título do anúncio<input id="ad-title" name="titulo" [(ngModel)]="draft.titulo" required minlength="3" maxlength="80" placeholder="Ex.: Manutenção de notebooks"></label>
+              <label>Categoria<select name="categoria" [(ngModel)]="draft.categoria" required><option value="" disabled>Selecione uma categoria</option>@for (c of categorias; track c) { <option [value]="c">{{c}}</option> }</select></label>
+              <label>Preço ou condição<input name="preco" [(ngModel)]="draft.preco" required minlength="2" maxlength="60" placeholder="Ex.: A partir de R$ 80"></label>
+              <label class="full">Descrição<textarea name="descricao" [(ngModel)]="draft.descricao" required minlength="10" maxlength="1200" rows="4" placeholder="Conte o que você oferece e como funciona o atendimento."></textarea><small>Mínimo de 10 caracteres.</small></label>
+              <label class="full">Link da foto <span class="optional">(opcional)</span><input name="imagem" type="url" pattern="https://.+" [(ngModel)]="draft.imagem" placeholder="https://..." maxlength="2000"><small>Use um endereço HTTPS. Sem foto, mostraremos uma imagem padrão.</small></label>
+            </div>
+            @if (formError) { <p class="alert error" role="alert">{{formError}}</p> }
+            <div class="form-actions"><button class="secondary" type="button" (click)="cancelEditor()">Cancelar</button><button class="primary" type="submit">{{editingId === null ? 'Publicar anúncio' : 'Salvar alterações'}}</button></div>
+          </form>
+        </section>
+      }
+      <section class="surface">
+        <div class="section-heading"><h2>Seu catálogo</h2><span class="count">{{filtered().length}} anúncios</span></div>
+        <div class="filters"><label class="search-label"><span class="sr-only">Buscar meus anúncios</span><input type="search" placeholder="Buscar por título ou categoria" [ngModel]="search()" (ngModelChange)="search.set($event)"></label><label><span class="sr-only">Filtrar por status</span><select [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event)"><option value="todos">Todos os status</option><option value="ativos">Ativos</option><option value="pausados">Pausados</option></select></label></div>
+        @if (!resident.mostrarPausados()) { <p class="helper">Anúncios pausados estão ocultos. Altere essa opção em Preferências.</p> }
+        <div class="listing-list">
+          @for (a of filtered(); track a.id) {
+            <article class="listing"><img [src]="a.imagem" [alt]="a.titulo" (error)="imageFailed($event)"><div class="listing-copy"><span class="category">{{a.categoria}}</span><h3>{{a.titulo}}</h3><p>{{a.preco}}</p><span class="status" [class.paused]="a.ativo === false">{{a.ativo === false ? 'Pausado' : 'Ativo'}}</span></div><div class="listing-actions"><button class="secondary" (click)="openEditor(a)">Editar</button><button class="subtle" (click)="toggleStatus(a)">{{a.ativo === false ? 'Ativar' : 'Pausar'}}</button>@if (a.ativo !== false) { <a class="subtle" [routerLink]="['/anuncios', a.id]">Visualizar</a> }<button class="danger-link" (click)="pendingDelete.set(a.id)">Excluir</button></div>
+              @if (pendingDelete() === a.id) { <div class="delete-confirm" role="alert"><p>Excluir “{{a.titulo}}”? Esta ação não pode ser desfeita.</p><div><button class="secondary" (click)="pendingDelete.set(null)">Cancelar</button><button class="danger" (click)="deleteAnuncio(a.id)">Confirmar exclusão</button></div></div> }
+            </article>
+          } @empty { <div class="empty"><span aria-hidden="true">▤</span><h3>{{resident.meusAnuncios().length ? 'Nenhum anúncio com esses filtros' : 'Você ainda não tem anúncios'}}</h3><p>{{resident.meusAnuncios().length ? 'Tente outro termo ou altere o filtro de status.' : 'Compartilhe seus produtos e serviços com a comunidade.'}}</p>@if (!resident.meusAnuncios().length) { <button class="primary" (click)="openEditor()">Criar meu primeiro anúncio</button> }</div> }
+        </div>
+      </section>
+    }
+
+    @if (section() === 'perfil') {
+      <section class="surface profile-form"><div class="section-heading"><div><h2>Sobre você</h2><p class="helper">Seu nome aparece nos anúncios que você publica.</p></div><div class="avatar">{{resident.iniciais()}}</div></div><form #profileForm="ngForm" (ngSubmit)="saveProfile(profileForm)"><div class="form-grid"><label>Nome completo<input name="nome" [(ngModel)]="perfil.nome" required minlength="3" maxlength="70" autocomplete="name"></label><label>E-mail<input name="email" [(ngModel)]="perfil.email" type="email" email required maxlength="120" autocomplete="email"></label><label class="full">Bloco e apartamento <span class="optional">(opcional)</span><input name="unidade" [(ngModel)]="perfil.unidade" maxlength="60" placeholder="Ex.: Bloco A, apartamento 304"></label><label class="full">Sua apresentação <span class="optional">(opcional)</span><textarea name="bio" [(ngModel)]="perfil.bio" maxlength="500" rows="4" placeholder="Conte um pouco sobre você e seu trabalho."></textarea></label></div>@if (profileError) { <p class="alert error" role="alert">{{profileError}}</p> }<div class="form-actions"><button class="primary" type="submit">Salvar perfil</button></div></form></section>
+    }
+
+    @if (section() === 'favoritos') {
+      <section class="surface"><div class="section-heading"><h2>Salvos para depois</h2><span class="count">{{resident.anunciosFavoritos().length}} favoritos</span></div>
+        @for (a of resident.anunciosFavoritos(); track a.id) { <article class="listing favorite"><img [src]="a.imagem" [alt]="a.titulo" (error)="imageFailed($event)"><div class="listing-copy"><span class="category">{{a.categoria}}</span><h3><a [routerLink]="['/anuncios', a.id]">{{a.titulo}}</a></h3><p>{{a.preco}}</p><small>{{a.vendedor}}</small></div><div class="listing-actions"><a class="secondary" [routerLink]="['/anuncios', a.id]">Ver anúncio</a><button class="subtle" (click)="resident.toggleFavorito(a.id)">Remover</button></div></article> }
+        @if (!resident.anunciosFavoritos().length) { <div class="empty"><span aria-hidden="true">♡</span><h3>Guarde boas descobertas</h3><p>Toque no coração de um anúncio para encontrá-lo aqui depois.</p><a class="primary" routerLink="/home">Explorar a comunidade</a></div> }
+      </section>
+    }
+
+    @if (section() === 'solicitacoes' || section() === 'avaliacoes') {
+      <section class="surface"><div class="empty"><span aria-hidden="true">{{section() === 'solicitacoes' ? '↗' : '☆'}}</span><h2>{{section() === 'solicitacoes' ? 'Nenhuma solicitação por aqui' : 'Suas avaliações aparecerão aqui'}}</h2><p>{{section() === 'solicitacoes' ? 'O recebimento de solicitações estará disponível quando o atendimento estiver integrado.' : 'O recebimento de avaliações estará disponível quando os atendimentos forem integrados.'}}</p><a class="secondary" routerLink="/painel" [queryParams]="{secao: 'anuncios'}">Cuidar dos meus anúncios</a></div></section>
+    }
+
+    @if (section() === 'configuracoes') {
+      <section class="surface preferences"><h2>Deixe o painel do seu jeito</h2><p class="helper">Essas preferências são aplicadas neste navegador.</p><label class="preference"><span><strong>Dicas da comunidade</strong><small>Mostrar sugestões para melhorar seus anúncios na visão geral.</small></span><input type="checkbox" [ngModel]="resident.dicas()" (ngModelChange)="resident.dicas.set($event)"></label><label class="preference"><span><strong>Mostrar anúncios pausados</strong><small>Incluir anúncios pausados na lista do seu catálogo.</small></span><input type="checkbox" [ngModel]="resident.mostrarPausados()" (ngModelChange)="resident.mostrarPausados.set($event)"></label><p class="helper">As alterações são salvas automaticamente.</p></section>
+    }
+  </section>
+</main>

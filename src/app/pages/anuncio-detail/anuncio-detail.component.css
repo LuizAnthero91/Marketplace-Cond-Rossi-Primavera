@@ -228,3 +228,14 @@ aside button {
     margin-top: 32px;
   }
 }
+@media (max-width: 600px) {
+  .container { padding-top: 16px; padding-bottom: 24px; }
+  .breadcrumbs { font-size: 12px; line-height: 1.5; margin: 0 0 16px; }
+  .detail-grid { gap: 20px; }
+  .main-img { aspect-ratio: 4 / 3; max-height: 320px; border-radius: 16px; }
+  .thumbs { gap: 8px; }
+  .copy h1 { font-size: 29px; }
+  .copy h2 { margin-block: 12px; }
+  aside { padding: 18px; }
+  .reviews { margin-top: 24px; }
+}

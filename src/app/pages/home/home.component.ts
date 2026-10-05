@@ -1,12 +1,12 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { HeaderComponent } from '../../shared/header.component';
 import { MockDataService } from '../../core/mock-data.service';
+import { ResidentService } from '../../core/resident.service';
 
 @Component({
-  selector: 'app-home', standalone: true, imports: [HeaderComponent, RouterLink],
+  selector: 'app-home', standalone: true, imports: [RouterLink],
   template: `
-    <app-header />
+    
     <main>
       <section class="hero">
         <img src="assets/rossi-torre.jpg" alt="Rossi Primavera">
@@ -30,7 +30,7 @@ import { MockDataService } from '../../core/mock-data.service';
         <div class="grid cards">
           @for (a of filtrados(); track a.id) {
             <article class="card">
-              <a [routerLink]="['/anuncios',a.id]" class="image-wrap"><img [src]="a.imagem" [alt]="a.titulo"><button class="heart">♡</button></a>
+              <div class="image-wrap"><a [routerLink]="['/anuncios',a.id]"><img [src]="a.imagem" [alt]="a.titulo"></a><button class="heart" (click)="resident.toggleFavorito(a.id)" [attr.aria-pressed]="resident.favoritos().includes(a.id)" [attr.aria-label]="(resident.favoritos().includes(a.id) ? 'Remover dos favoritos: ' : 'Salvar nos favoritos: ') + a.titulo">{{resident.favoritos().includes(a.id) ? '♥' : '♡'}}</button></div>
               <div class="card-body"><span class="category">{{a.categoria}}</span><h3>{{a.titulo}}</h3><p class="seller">{{a.vendedor}} · ★ {{a.avaliacao}}</p><strong>{{a.preco}}</strong><span class="verified">✓ Morador verificado</span></div>
             </article>
           }
@@ -50,8 +50,9 @@ import { MockDataService } from '../../core/mock-data.service';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
+  readonly resident = inject(ResidentService);
   busca = signal(''); categoria = signal(''); categorias = [{nome:'Alimentação',icon:'🍰'},{nome:'Beleza',icon:'✦'},{nome:'Pet Care',icon:'🐾'},{nome:'Informática',icon:'⌨'},{nome:'Manutenção',icon:'🔧'},{nome:'Aulas',icon:'✎'}];
   parceiros = this.data.parceiros;
-  filtrados = computed(() => { const q=this.busca().toLowerCase(); const c=this.categoria(); return this.data.anuncios().filter(a=>(!q || `${a.titulo} ${a.categoria} ${a.vendedor}`.toLowerCase().includes(q)) && (!c || a.categoria===c)); });
+  filtrados = computed(() => { const q=this.busca().toLowerCase(); const c=this.categoria(); return this.data.anuncios().filter(a=>a.ativo !== false && (!q || `${a.titulo} ${a.categoria} ${a.vendedor}`.toLowerCase().includes(q)) && (!c || a.categoria===c)); });
   constructor(public data: MockDataService) {}
 }
