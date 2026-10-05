@@ -1,0 +1,8 @@
+import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { HeaderComponent } from '../../shared/header.component';
+import { MockDataService } from '../../core/mock-data.service';
+
+@Component({selector:'app-parceiros',standalone:true,imports:[HeaderComponent,RouterLink],template:`
+<app-header/><section class="partner-hero"><div><p class="kicker">PARCEIROS ROSSI PRIMAVERA</p><h1>Negócios locais que<br>apoiam nossa comunidade.</h1><p>Vantagens especiais para moradores e mais visibilidade para comerciantes da região.</p></div></section><main class="container"><div class="section-head"><div><span>PARCEIROS CADASTRADOS</span><h2>Conheça nossos parceiros</h2></div><button>Quero ser parceiro</button></div><div class="partner-grid">@for(p of data.parceiros();track p.id){<a [routerLink]="['/parceiros',p.id]" class="partner-card"><img [src]="p.imagem"><div><small>{{p.categoria}}</small><h3>{{p.nome}}</h3><p>{{p.descricao}}</p><div class="benefit">✦ {{p.beneficio}}</div><b>★ {{p.avaliacao}} · Parceiro verificado</b></div></a>}</div><section class="plans"><div><p class="kicker">PARA COMERCIANTES</p><h2>Divulgue seu negócio para a comunidade</h2><p>Cadastre sua empresa, publique fotos, ofertas e benefícios exclusivos para moradores.</p></div><article><span>PLANO PARCEIRO</span><h3>R$ 49,90<small>/mês</small></h3><ul><li>✓ Perfil comercial</li><li>✓ Até 10 fotos</li><li>✓ WhatsApp e redes sociais</li><li>✓ Ofertas e cupons</li><li>✓ Métricas de visualização</li></ul><button>Quero participar</button></article></section></main>`,styleUrl: './parceiros.component.css'} )
+export class ParceirosComponent{constructor(public data:MockDataService){}}

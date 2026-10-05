@@ -1,0 +1,240 @@
+.partner-card {
+  display: block;
+  text-decoration: none;
+  color: var(--text);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.partner-card>div {
+  padding: 18px;
+}
+
+.partner-card small {
+  color: var(--rose);
+  font-weight: 700;
+}
+
+.partner-card p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.benefit {
+  background: #fff0ef;
+  color: var(--rose-dark);
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 12px;
+  margin: 13px 0;
+}
+
+.partner-card b {
+  font-size: 11px;
+  color: var(--rose-dark);
+}
+
+.plans>div p {
+  color: var(--muted);
+  max-width: 550px;
+}
+
+.plans article {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 14px 40px rgba(85,42,50,.08);
+}
+
+.plans article>span {
+  font-size: 10px;
+  color: var(--rose);
+  font-weight: 700;
+}
+
+.plans h3 small {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.plans ul {
+  list-style: none;
+  padding: 0;
+  line-height: 2;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+:host {
+  display: block;
+}
+
+.partner-hero {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  color: white;
+  padding: 48px var(--page-gutter);
+  background: radial-gradient(ellipse at 90% 0%, #ab6375, transparent 55%), linear-gradient(135deg, #542330, #84394a);
+}
+
+.partner-hero > div {
+  max-width: 1312px;
+  width: 100%;
+  margin-inline: auto;
+}
+
+.partner-hero h1 {
+  font-family: var(--serif);
+  margin: 10px 0;
+  font-size: clamp(34px, 4.5vw, 56px);
+  line-height: 1.12;
+}
+
+.partner-hero p {
+  max-width: 700px;
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.kicker {
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  letter-spacing: .1em !important;
+}
+
+.container {
+  margin: auto;
+  max-width: 1440px;
+  padding: 36px var(--page-gutter) 64px;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+}
+
+.section-head > div {
+  flex: 1 1 280px;
+}
+
+.section-head span {
+  color: var(--rose);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: .08em;
+}
+
+.section-head h2, .plans h2 {
+  font-family: var(--serif);
+  margin: 4px 0;
+  font-size: clamp(28px, 3vw, 38px);
+  line-height: 1.2;
+}
+
+.section-head button, .plans button {
+  border: 0;
+  background: var(--rose-dark);
+  color: #fff;
+  padding: 13px 18px;
+  border-radius: 12px;
+  font-weight: 700;
+  display: block;
+  min-height: 48px;
+  font-size: 15px;
+}
+
+.partner-grid {
+  display: grid;
+  gap: 20px;
+  margin-top: 20px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.partner-card img {
+  width: 100%;
+  object-fit: cover;
+  height: auto;
+  aspect-ratio: 4 / 3;
+}
+
+.partner-card h3 {
+  font-family: var(--serif);
+  font-size: 26px;
+  margin: 5px 0;
+  line-height: 1.25;
+}
+
+.partner-card p, .plans ul {
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.partner-card small, .partner-card b, .benefit, .plans article > span {
+  font-size: 13px;
+}
+
+.plans {
+  margin-top: 60px;
+  border-radius: 28px;
+  background: linear-gradient(135deg,#fff4f3,#f8dcde);
+  display: grid;
+  align-items: center;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
+  padding: clamp(20px, 3vw, 40px);
+  gap: 32px;
+}
+
+.plans h3 {
+  color: var(--rose-dark);
+  margin: 8px 0;
+  font-size: clamp(28px, 3vw, 34px);
+}
+
+.plans li + li {
+  margin-top: 8px;
+}
+
+@media (max-width: 1000px) {
+  .partner-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .plans {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .partner-hero {
+    min-height: 0;
+    padding-block: 36px;
+  }
+
+  .partner-hero p {
+    font-size: 16px;
+  }
+
+  .partner-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .plans {
+    margin-top: 36px;
+  }
+
+  .plans article {
+    padding: 20px;
+  }
+
+  .plans button {
+    width: 100%;
+  }
+}
